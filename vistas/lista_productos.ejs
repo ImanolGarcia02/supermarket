@@ -1,0 +1,43 @@
+<%- include('header') %>
+
+<div class="text-center mb-3">
+  <img src="https://cdn-icons-png.flaticon.com/512/2838/2838912.png" alt="Productos" style="width: 80px;">
+</div>
+
+<h2 class="mb-3">Mis Productos</h2>
+<div class="mb-4">
+  <a href="/productos/nuevo" class="btn btn-primary">Nuevo</a>
+</div>
+
+<% if (productos.length === 0) { %>
+  <p class="alert alert-info">No hay productos. ¡Agrega uno!</p>
+<% } else { %>
+  <div class="table-responsive">
+    <table class="table table-bordered" style="background-color: #e7f5fe;">
+      <thead style="background-color: #bde0fe;">
+        <tr>
+          <th>Nombre</th>
+          <th>Precio</th>
+          <th>Stock</th>
+          <th>Opciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% productos.forEach(producto => { %>
+        <tr>
+          <td><strong><%= producto.nombre %></strong></td>
+          <td>$<%= producto.precio.toFixed(2) %></td>
+          <td><%= producto.stock %></td>
+          <td>
+            <a href="/productos/<%= producto._id %>/editar" class="btn btn-sm btn-secondary">Cambiar</a>
+            <form action="/productos/<%= producto._id %>?_method=DELETE" method="POST" style="display: inline;">
+              <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('¿Quitar este producto?')">Quitar</button>
+            </form>
+          </td>
+        </tr>
+        <% }); %>
+      </tbody>
+    </table>
+  </div>
+<% } %>
+

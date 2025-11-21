@@ -1,0 +1,47 @@
+<%- include('header') %>
+
+<div class="text-center mb-3">
+  <img src="https://cdn-icons-png.flaticon.com/512/3081/3081559.png" alt="Ventas" style="width: 80px;">
+</div>
+
+<h2 class="mb-3">Ventas</h2>
+<div class="mb-4">
+  <a href="/ventas/nuevo" class="btn btn-primary">Añadir</a>
+</div>
+
+<% if (ventas.length === 0) { %>
+  <p class="alert alert-info">No hay ventas.</p>
+<% } else { %>
+  <div class="table-responsive">
+    <table class="table table-bordered" style="background-color: #e7f5fe;">
+      <thead style="background-color: #bde0fe;">
+        <tr>
+          <th>Item</th>
+          <th>Comprador</th>
+          <th>Cuántos</th>
+          <th>Fecha</th>
+          <th>Total</th>
+          <th>Opciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% ventas.forEach(venta => { %>
+        <tr>
+          <td><strong><%= venta.productoId ? venta.productoId.nombre : 'No disponible' %></strong></td>
+          <td><%= venta.cliente %></td>
+          <td><%= venta.cantidad %></td>
+          <td><%= new Date(venta.fechaVenta).toLocaleDateString() %></td>
+          <td>$<%= venta.total.toFixed(2) %></td>
+          <td>
+            <a href="/ventas/<%= venta._id %>/editar" class="btn btn-sm btn-secondary">Modificar</a>
+            <form action="/ventas/<%= venta._id %>?_method=DELETE" method="POST" style="display: inline;">
+              <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('¿Seguro que la quitas?')">Borrar</button>
+            </form>
+          </td>
+        </tr>
+        <% }); %>
+      </tbody>
+    </table>
+  </div>
+<% } %>
+
