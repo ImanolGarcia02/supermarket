@@ -1,23 +1,26 @@
 const mongoose = require('mongoose');
 
 const productoSchema = new mongoose.Schema({
-  nombre: {            
+  nombre: {
     type: String,
-    required: true
+    required: true,
+    trim: true
   },
   precio: {
     type: Number,
-    required: true
+    required: true,
+    min: 0
   },
   stock: {
     type: Number,
-    required: true,
-    default: 0      
+    default: 0,
+    min: 0
   },
-  fechaRegistro: {      
-    type: Date,
-    default: Date.now
+  imagen: {
+    type: String,
+    default: ''   // opcional: ruta o nombre de archivo
   }
 });
 
-module.exports = mongoose.model('Producto', productoSchema);
+// 👇 Ajuste para evitar OverwriteModelError
+module.exports = mongoose.models.Producto || mongoose.model('Producto', productoSchema);

@@ -7,27 +7,62 @@
 <div class="row">
   <div class="col-md-6">
     <h2 class="mb-4">Cambiar Producto</h2>
-    <form action="/productos/<%= producto._id %>?_method=PUT" method="POST">
-      
-        <label for="nombre" class="form-label">Nombre:</label>
-        <input type="text" id="nombre" name="nombre" class="form-control" required value="<%= producto.nombre %>">
-      
+
+    <!-- FORMULARIO PRINCIPAL -->
+    <form action="/productos/<%= producto._id %>?_method=PUT" 
+          method="POST" 
+          enctype="multipart/form-data">
+
+      <label for="nombre" class="form-label">Nombre:</label>
+      <input type="text" id="nombre" name="nombre" class="form-control" required value="<%= producto.nombre %>">
+
       <br>
-      
-        <label for="precio" class="form-label">Precio:</label>
-        <input type="number" id="precio" name="precio" class="form-control" required step="0.01" value="<%= producto.precio %>">
-      
+
+      <label for="precio" class="form-label">Precio:</label>
+      <input type="number" id="precio" name="precio" class="form-control" required step="0.01" value="<%= producto.precio %>">
+
       <br>
-      
-        <label for="stock" class="form-label">Cantidad:</label>
-        <input type="number" id="stock" name="stock" class="form-control" required min="0" value="<%= producto.stock %>">
-      
+
+      <label for="stock" class="form-label">Cantidad:</label>
+      <input type="number" id="stock" name="stock" class="form-control" required min="0" value="<%= producto.stock %>">
+
       <br>
+
+      <!-- IMAGEN ACTUAL -->
+      <label class="form-label">Imagen actual:</label>
+      <br>
+
+      <% if (producto.imagen) { %>
+        <img src="/imagenes/<%= producto.imagen %>" width="120" class="mb-3">
+      <% } else { %>
+        <p class="text-muted">Sin imagen</p>
+      <% } %>
+
+      <br>
+
+      <!-- Subir nueva imagen -->
+      <label for="imagen" class="form-label">Cambiar imagen:</label>
+      <input type="file" id="imagen" name="imagen" class="form-control">
+
+      <br>
+
       <div class="d-flex gap-2">
         <button type="submit" class="btn btn-primary">Guardar</button>
         <a href="/productos" class="btn btn-secondary">Volver</a>
       </div>
+
     </form>
+
+    <!-- BOTÓN DE ELIMINAR IMAGEN — DEBE IR FUERA DEL FORM PRINCIPAL -->
+    <% if (producto.imagen) { %>
+      <form action="/productos/<%= producto._id %>/eliminar-imagen?_method=PUT"
+            method="POST"
+            onsubmit="return confirm('¿Eliminar imagen del producto?')"
+            class="mt-2">
+
+        <button class="btn btn-danger btn-sm">Eliminar Imagen</button>
+      </form>
+    <% } %>
+
   </div>
 </div>
-

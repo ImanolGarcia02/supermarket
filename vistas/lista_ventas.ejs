@@ -1,20 +1,29 @@
 <%- include('header') %>
 
-<div class="text-center mb-3">
-  <img src="https://cdn-icons-png.flaticon.com/512/3081/3081559.png" alt="Ventas" style="width: 80px;">
+<div class="text-center mb-4">
+  <h2>Ventas</h2>
 </div>
 
-<h2 class="mb-3">Ventas</h2>
-<div class="mb-4">
-  <a href="/ventas/nuevo" class="btn btn-primary">Añadir</a>
-</div>
+<!-- 🔍 BUSCAR POR FECHA -->
+<form action="/ventas/buscar/fecha" method="GET" class="mb-3">
+  <label class="form-label fw-bold">Buscar por fecha:</label>
+  <input type="date" name="fecha" class="form-control" required>
+  <button class="btn btn-primary mt-2" type="submit">Buscar</button>
+</form>
+
+<!-- Solo el vendedor puede añadir ventas -->
+<% if (usuario && usuario.role === "vendedor") { %>
+  <div class="mb-3 text-end">
+    <a href="/ventas/nuevo" class="btn btn-success">Añadir Venta</a>
+  </div>
+<% } %>
 
 <% if (ventas.length === 0) { %>
-  <p class="alert alert-info">No hay ventas.</p>
+  <p class="alert alert-info text-center">No hay ventas registradas.</p>
 <% } else { %>
   <div class="table-responsive">
-    <table class="table table-bordered" style="background-color: #e7f5fe;">
-      <thead style="background-color: #bde0fe;">
+    <table class="table table-striped table-hover align-middle">
+      <thead class="table-primary text-center">
         <tr>
           <th>Item</th>
           <th>Comprador</th>
@@ -27,16 +36,31 @@
       <tbody>
         <% ventas.forEach(venta => { %>
         <tr>
-          <td><strong><%= venta.productoId ? venta.productoId.nombre : 'No disponible' %></strong></td>
+          <td><%= venta.productoId ? venta.productoId.nombre : "Producto eliminado" %></td>
           <td><%= venta.cliente %></td>
           <td><%= venta.cantidad %></td>
           <td><%= new Date(venta.fechaVenta).toLocaleDateString() %></td>
-          <td>$<%= venta.total.toFixed(2) %></td>
-          <td>
-            <a href="/ventas/<%= venta._id %>/editar" class="btn btn-sm btn-secondary">Modificar</a>
-            <form action="/ventas/<%= venta._id %>?_method=DELETE" method="POST" style="display: inline;">
-              <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('¿Seguro que la quitas?')">Borrar</button>
-            </form>
+          <td>$<%= Number(venta.total).toFixed(2) %></td>
+
+          <td class="text-center">
+            <% if (usuario && usuario.role === "vendedor") { %>
+              <a href="/ventas/<%= venta._id %>/editar" class="btn btn-sm btn-outline-secondary me-1">
+                Modificar
+              </a>
+
+              <% if (!venta.cancelada) { %>
+                <form action="/ventas/<%= venta._id %>/cancelar?_method=PUT" method="POST" style="display:inline;">
+                  <button type="submit" class="btn btn-sm btn-warning" onclick="return confirm('¿Cancelar esta venta?')">
+                    Cancelar
+                  </button>
+                </form>
+              <% } else { %>
+                <span class="text-muted">Cancelada</span>
+              <% } %>
+
+            <% } else { %>
+              <span class="text-muted">Solo lectura</span>
+            <% } %>
           </td>
         </tr>
         <% }); %>
@@ -44,4 +68,3 @@
     </table>
   </div>
 <% } %>
-

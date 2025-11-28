@@ -1,0 +1,43 @@
+<%- include('header') %>
+
+<div class="container mt-4">
+  <h2 class="text-center mb-4">Panel Administrador</h2>
+
+  <div class="row justify-content-center">
+    <!-- Total Productos -->
+    <div class="col-md-4 mb-3">
+      <div class="card text-center" style="background-color: #e7f5fe;">
+        <div class="card-body">
+          <h5 class="card-title">Total Productos</h5>
+          <p class="display-4"><%= totalProductos %></p>
+          <a href="/productos" class="btn btn-primary">Ver Productos</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Total Ventas -->
+    <div class="col-md-4 mb-3">
+      <div class="card text-center" style="background-color: #e7f5fe;">
+        <div class="card-body">
+          <h5 class="card-title">Total Ventas</h5>
+          <p class="display-4"><%= totalVentas %></p>
+          <a href="/ventas" class="btn btn-primary">Ver Ventas</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Ingresos Totales -->
+    <div class="col-md-4 mb-3">
+      <div class="card text-center" style="background-color: #e7f5fe;">
+        <div class="card-body">
+          <h5 class="card-title">Ingresos Totales</h5>
+          <p class="display-4">$<%= totalIngresos.toFixed(2) %></p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="text-center mt-4">
+    <a href="/usuarios/logout" class="btn btn-danger">Cerrar Sesión</a>
+  </div>
+</div>

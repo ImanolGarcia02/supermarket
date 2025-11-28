@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const User = require('../models/user');
 
+// Formulario de login
 router.get('/login', (req, res) => {
   res.send(`
     <h2>Login</h2>
@@ -14,7 +15,7 @@ router.get('/login', (req, res) => {
   `);
 });
 
-
+// Procesar login
 router.post('/login', async (req, res) => {
   const { username, password } = req.body;
 
@@ -34,21 +35,25 @@ router.post('/login', async (req, res) => {
   // Redirecciones según tipo de usuario
   if (user.role === "admin") {
     return res.redirect("/admin");
+  } else if (user.role === "vendedor") {
+    return res.redirect("/vendedor");
   } else {
-    return res.redirect("/usuarios/normal");
+    return res.redirect("/");
   }
 });
 
-router.get('/normal', (req, res) => {
+// Ruta para vendedores (ejemplo simple)
+router.get('/vendedor', (req, res) => {
   if (!req.session.user) {
     return res.redirect("/");
   }
-  if (req.session.user.role !== "normal") {
+  if (req.session.user.role !== "vendedor") {
     return res.redirect("/");
   }
-  res.send("Bienvenido usuario NORMAL");
+  res.send("Bienvenido usuario vendedor");
 });
 
+// Formulario de registro
 router.get('/register', (req, res) => {
   res.send(`
     <h2>Crear Usuario</h2>
@@ -56,7 +61,7 @@ router.get('/register', (req, res) => {
       <input name="username" placeholder="Usuario" required><br>
       <input name="password" type="password" placeholder="Contraseña" required><br>
       <select name="role">
-        <option value="normal">Normal</option>
+        <option value="vendedor">Vendedor</option>
         <option value="admin">Admin</option>
       </select><br>
       <button type="submit">Registrar</button>
@@ -64,6 +69,7 @@ router.get('/register', (req, res) => {
   `);
 });
 
+// Procesar registro
 router.post('/register', async (req, res) => {
   const { username, password, role } = req.body;
 
@@ -72,14 +78,16 @@ router.post('/register', async (req, res) => {
     await newUser.save();
     res.send(`Usuario ${username} creado con rol ${role}`);
   } catch (err) {
-    res.redirect("Error al crear usuario: " + err.message);
+    res.send("Error al crear usuario: " + err.message);
   }
 });
 
-router.get('/logout', (req, res) => {
-  req.session.destroy();
-  res.clearCookie("contador_cookie");
-  res.redirect("/");
+// Logout
+router.get("/logout", (req, res) => {
+  req.session.destroy(() => {
+    res.clearCookie("contador_cookie");
+    res.redirect("/"); // 
+  });
 });
 
 module.exports = router;

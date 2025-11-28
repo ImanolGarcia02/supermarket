@@ -1,21 +1,30 @@
-<%- include('header') %>
+lista_productos <%- include('header') %>
 
-<div class="text-center mb-3">
+<div class="text-center mb-4">
   <img src="https://cdn-icons-png.flaticon.com/512/2838/2838912.png" alt="Productos" style="width: 80px;">
+  <h2 class="mt-2">Mis Productos</h2>
 </div>
 
-<h2 class="mb-3">Mis Productos</h2>
-<div class="mb-4">
-  <a href="/productos/nuevo" class="btn btn-primary">Nuevo</a>
-</div>
+<!-- 🔍 BUSCADOR POR NOMBRE -->
+<form action="/productos/buscar/nombre" method="GET" class="mb-3">
+  <input type="text" name="nombre" class="form-control" placeholder="Buscar producto por nombre...">
+</form>
+
+<!-- Botón de agregar solo visible para admin -->
+<% if (usuario && usuario.role === "admin") { %>
+  <div class="mb-4 text-end">
+    <a href="/productos/nuevo" class="btn btn-primary">Agregar nuevo producto</a>
+  </div>
+<% } %>
 
 <% if (productos.length === 0) { %>
-  <p class="alert alert-info">No hay productos. ¡Agrega uno!</p>
+  <p class="alert alert-info text-center">No hay productos registrados.</p>
 <% } else { %>
   <div class="table-responsive">
-    <table class="table table-bordered" style="background-color: #e7f5fe;">
-      <thead style="background-color: #bde0fe;">
+    <table class="table table-striped table-hover align-middle">
+      <thead class="table-primary text-center">
         <tr>
+          <th>Imagen</th>
           <th>Nombre</th>
           <th>Precio</th>
           <th>Stock</th>
@@ -25,14 +34,29 @@
       <tbody>
         <% productos.forEach(producto => { %>
         <tr>
+          <td class="text-center">
+            <% if (producto.imagen) { %>
+              <img src="/imagenes/<%= producto.imagen %>" 
+                   alt="Foto" width="60" height="60" 
+                   style="object-fit: cover; border-radius: 8px;">
+            <% } else { %>
+              <span class="text-muted">Sin imagen</span>
+            <% } %>
+          </td>
+
           <td><strong><%= producto.nombre %></strong></td>
-          <td>$<%= producto.precio.toFixed(2) %></td>
+          <td>$<%= Number(producto.precio).toFixed(2) %></td>
           <td><%= producto.stock %></td>
-          <td>
-            <a href="/productos/<%= producto._id %>/editar" class="btn btn-sm btn-secondary">Cambiar</a>
-            <form action="/productos/<%= producto._id %>?_method=DELETE" method="POST" style="display: inline;">
-              <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('¿Quitar este producto?')">Quitar</button>
-            </form>
+
+          <td class="text-center">
+            <% if (usuario && usuario.role === "admin") { %>
+              <a href="/productos/<%= producto._id %>/editar" class="btn btn-sm btn-outline-secondary me-1">Cambiar</a>
+              <form action="/productos/<%= producto._id %>?_method=DELETE" method="POST" style="display: inline;">
+                <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('¿Quitar este producto?')">Quitar</button>
+              </form>
+            <% } else { %>
+              <span class="text-muted">Solo lectura</span>
+            <% } %>
           </td>
         </tr>
         <% }); %>
@@ -40,4 +64,3 @@
     </table>
   </div>
 <% } %>
-

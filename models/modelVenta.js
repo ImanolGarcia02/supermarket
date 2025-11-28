@@ -21,7 +21,11 @@ const ventaSchema = new mongoose.Schema({
   fechaVenta: {
     type: Date,
     default: Date.now
+  },
+  fechaCancelada: {
+    type: Boolean,
+    default: false
   }
 });
 
-module.exports = mongoose.model('Venta', ventaSchema);
+module.exports = mongoose.models.Venta || mongoose.model('Venta', ventaSchema);

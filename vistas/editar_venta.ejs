@@ -7,43 +7,50 @@
 <div class="row">
   <div class="col-md-6">
     <h2 class="mb-4">Corregir Venta</h2>
+
     <form action="/ventas/<%= venta._id %>?_method=PUT" method="POST">
-      
-        <label for="productoId" class="form-label">Item:</label>
-        <select id="productoId" name="productoId" class="form-select" required>
-          <% productos.forEach(producto => { %>
-            <option value="<%= producto._id %>" <%= venta.productoId._id.equals(producto._id) ? 'selected' : '' %>>
-              <%= producto.nombre %> - <%= producto.precio.toFixed(2) %>
-            </option>
-          <% }); %>
-        </select>
-      
+
+      <!-- Selección de producto -->
+      <label for="productoId" class="form-label">Item:</label>
+      <select id="productoId" name="productoId" class="form-select" required>
+      <% if (!venta.productoId) { %>
+      <!-- Si el producto fue eliminado -->
+      <option selected disabled>Producto no disponible</option>
+   <% } %>
+
+  <% productos.forEach(producto => { %>
+    <option value="<%= producto._id %>"
+      <%= venta.productoId && String(venta.productoId._id) === String(producto._id) ? 'selected' : '' %>>
+        <%= producto.nombre %> -
+        <%= producto.precio ? `$${producto.precio.toFixed(2)}` : "Precio no disponible" %>
+     </option>
+   <% }); %>
+  </select>
+
+
       <br>
-      
-        <label for="cliente" class="form-label">Comprador:</label>
-        <input type="text" id="cliente" name="cliente" class="form-control" value="<%= venta.cliente %>" required>
-      
+
+      <!-- Cliente -->
+      <label for="cliente" class="form-label">Comprador:</label>
+      <input type="text" id="cliente" name="cliente" class="form-control" 
+             value="<%= venta.cliente %>" required>
+
       <br>
-      
-        <label for="cantidad" class="form-label">Cuántos:</label>
-        <input type="number" id="cantidad" name="cantidad" class="form-control" value="<%= venta.cantidad %>" required min="1">
-      
+
+      <!-- Cantidad -->
+      <label for="cantidad" class="form-label">Cuántos:</label>
+      <input type="number" id="cantidad" name="cantidad" class="form-control"
+             value="<%= venta.cantidad %>" required min="1">
+
       <br>
-      
-        <label for="fechaVenta" class="form-label">Fecha:</label>
-        <input type="date" id="fechaVenta" name="fechaVenta" class="form-control" value="<%= venta.fechaVenta.toISOString().split('T')[0] %>" required>
-      
-      <br>
-      
-        <label for="total" class="form-label">Total:</label>
-        <input type="number" id="total" name="total" class="form-control" step="0.01" value="<%= venta.total %>" required>
-      
-      <br>
+
+      <!-- Botones -->
       <div class="d-flex gap-2">
         <button type="submit" class="btn btn-primary">Actualizar</button>
         <a href="/ventas" class="btn btn-secondary">Cancelar</a>
       </div>
+
     </form>
+
   </div>
 </div>
-
